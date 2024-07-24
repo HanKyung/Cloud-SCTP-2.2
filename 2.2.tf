@@ -15,7 +15,7 @@ resource "aws_vpc" "stphn-vpc-24072024" {
 # create new subnets
 resource "aws_subnet" "stphn24072024-tf-public-subnet-us-east-1a" {
   vpc_id     = aws_vpc.stphn-vpc-24072024.id
-  cidr_block = "10.0.0.0/16"
+  cidr_block = var.public_subnet_cidrs[0]
 
   tags = {
     Name = "stphn24072024-tf-public-subnet-us-east-1a"
@@ -24,7 +24,7 @@ resource "aws_subnet" "stphn24072024-tf-public-subnet-us-east-1a" {
 
 resource "aws_subnet" "stphn24072024-tf-public-subnet-us-east-1b" {
   vpc_id     = aws_vpc.stphn-vpc-24072024.id
-  cidr_block = "10.0.0.0/16"
+  cidr_block = var.public_subnet_cidrs[1]
 
   tags = {
     Name = "stphn24072024-tf-public-subnet-us-east-1b"
@@ -34,10 +34,10 @@ resource "aws_subnet" "stphn24072024-tf-public-subnet-us-east-1b" {
 # private subnet1
 resource "aws_subnet" "stphn24072024-tf-private-subnet-us-east-1a" {
   vpc_id     = aws_vpc.stphn-vpc-24072024.id
-  cidr_block = "10.0.0.0/16"
+  cidr_block = var.private_subnet_cidrs[0]
 
   tags = {
-    Name = "stphn24072024-tf-public-subnet-us-east-1a"
+    Name = "stphn24072024-tf-private-subnet-us-east-1a"
   }
 }
 
@@ -45,10 +45,10 @@ resource "aws_subnet" "stphn24072024-tf-private-subnet-us-east-1a" {
 
 resource "aws_subnet" "stphn24072024-tf-private-subnet-us-east-1b" {
   vpc_id     = aws_vpc.stphn-vpc-24072024.id
-  cidr_block = "10.0.0.0/16"
+  cidr_block = var.private_subnet_cidrs[1]
 
   tags = {
-    Name = "stphn24072024-tf-public-subnet-us-east-1b"
+    Name = "stphn24072024-tf-private-subnet-us-east-1b"
   }
 }
 
@@ -181,7 +181,7 @@ resource "aws_security_group" "stphn-sg" {
 
 resource "aws_vpc_endpoint" "stphn-tf-s3" {
   vpc_id       = aws_vpc.stphn-vpc-24072024.id
-  service_name = "com.amazonaws.us-east-1a.s3"
+  service_name = "com.amazonaws.us-east-1.s3"
 }
 
 
