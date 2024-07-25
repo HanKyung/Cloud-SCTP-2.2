@@ -196,6 +196,24 @@ data "aws_ami" "amzn-linux-2023-ami" {
   }
 }
 
+resource "tls_private_key" "pk"{
+  algorithm = "RSA"
+  rsa_bits =  4096
+
+}
+
+resource "aws_key_pair" "newkp"{
+  key_name = "stphn-ec2-25072024"
+  public_key = tls_private_key.pk.public_key_openssh
+
+  provisioner "local-exec" {# create key to machine
+    command = "echo '${tls_private_key.pk.private_key_pem} > ~/stphn-ec2-25072024.pem"
+    
+  }
+
+
+}
+
 
 resource "aws_instance" "stphn-tf-ec2" {
   ami = data.aws_ami.amzn-linux-2023-ami.id
@@ -205,6 +223,13 @@ resource "aws_instance" "stphn-tf-ec2" {
   key_name = "stphn-ec2-20072024"
   vpc_security_group_ids = [aws_security_group.stphn-sg.id]
   availability_zone = "us-east-1a"
+
+  user_data =  <<EOF
+  #!bin/bash
+  yum update -y
+  yum install httpd -y
+  yum install docker -y
+  EOF
 
   tags = {
     Name = "stphn-tf-ec2"
